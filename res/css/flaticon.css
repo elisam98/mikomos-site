@@ -1,0 +1,74 @@
+@font-face {
+	font-family: 'Flaticon';
+	src: url("../fonts/flaticon.eot");
+	src: url("../fonts/flaticon.eot#iefix") format("embedded-opentype"),
+	url("../fonts/flaticon.woff") format("woff"),
+	url("../fonts/flaticon.ttf") format("truetype"),
+	url("../fonts/flaticon.svg") format("svg");
+}
+.flaticon {   
+	font-family: 'Flaticon';
+	margin-left: 10px; 
+	position: relative; 
+	top: 1px;
+	display: inline-block;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.flaticon-lg {
+  font-size: 1.33333333em;
+  line-height: 0.75em;
+  vertical-align: -15%;
+}
+.flaticon-2x {
+  font-size: 2em;
+}
+.flaticon-3x {
+  font-size: 3em;
+}
+.flaticon-4x {
+  font-size: 4em;
+}
+.flaticon-5x {
+  font-size: 5em;
+}
+.flaticon-activity:before {
+	content: "\e000";
+}
+.flaticon-restaurant2:before {
+	content: "\e001";
+}
+.flaticon-placemark:before {
+	content: "\e002";
+}
+.flaticon-lounge:before {
+	content: "\e003";
+}
+.flaticon-museum2:before {
+	content: "\e004";
+}
+.flaticon-museum:before {
+	content: "\e005";
+}
+.flaticon-activity2:before {
+	content: "\e006";
+}
+.flaticon-park:before {
+	content: "\e007";
+}
+.flaticon-lounge2:before {
+	content: "\e008";
+}
+.flaticon-restaurant:before {
+	content: "\e009";
+}
+.flaticon-shopping:before {
+	content: "\e00a";
+}
+.flaticon-park2:before {
+	content: "\e00b";
+}

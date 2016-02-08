@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Mikomos</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="res/css/bootstrap-3.1.1.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/lumen/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="res/css/flaticon.css">
+		<link rel="shortcut icon" href="" />
+	</head>
+  <body>
+<script type="text/x-handlebars">
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-3 text-left">
+				{{#unless isHome}}{{back-button}}{{/unless}}
+			</div>
+			<div class="col-xs-6 text-center">
+				{{#link-to 'application'}}<img src="res/img/mikomos_banner.svg" style="height:50px">{{/link-to}}
+			</div>
+		</div> 
+	</div> 
+</nav>
+	<div class="container-fluid">
+	{{outlet}}
+	</div>
+	<span style="display:block; height:70px;"></span>
+<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+	<div class="container-fluid">
+		<p class="navbar-text">&copy; 2014 Eli Samuel</p>
+	</div>
+</nav>
+</script>
+<script type="text/x-handlebars" data-template-name="index">
+	<div class="row">
+		<div class="col-xs-6 col-xs-offset-3">
+			<img src="res/img/mikomos_banner.svg" class="img-responsive">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+		{{auto-complete search="search" model=model.mikomos}}
+		</div>
+	</div>
+	<p></p>
+	<hr>
+	<div class="row">
+		<div class="col-sm-6 text-center">
+		{{#link-to 'search' classNames="thumbnail"}}
+			<h1><span class="glyphicon glyphicon-search"></span> Search</h1>
+			<p>Advanced search of Mikomos</p>
+		{{/link-to}}
+		</div>
+		<div class="col-sm-6 text-center">
+		{{#link-to 'browse' classNames="thumbnail"}}
+			<h1><span class="glyphicon glyphicon-list"></span> Browse</h1>
+			<p>Browse through the list of mikomos.</p>
+		{{/link-to}}
+		</div>
+		<div class="col-sm-6 text-center">
+		{{#link-to 'browse' classNames="thumbnail"}}
+			<h1><span class="glyphicon glyphicon-refresh"></span> Sync</h1>
+			<p>Last Update: {{databaseDate}}</p>
+		{{/link-to}}
+		</div>
+		<div class="col-sm-6 text-center">
+		{{#link-to 'browse' classNames="thumbnail"}}
+			<h1><span class="glyphicon glyphicon-user"></span> About</h1>
+			<p>About Mikomos</p>
+		{{/link-to}}
+		</div>
+	</div>
+</script>
+<script type="text/x-handlebars" data-template-name="loading">
+<center><h1>Loading Your Mikomos</h1></center>
+</script>
+<script type="text/x-handlebars" data-template-name="browse">
+	<div class="row">
+		<div class="col-xs-10 col-xs-offset-2">
+			<h1>Browse</h1>
+			<p><small>Click on a makom to view details.</small></p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			{{results-view model=model}}
+		</div>
+	</div>
+</script>
+<script type="text/x-handlebars" data-template-name="search/index">
+	<div class="row">
+		<div class="col-xs-2">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<span class="panel-title">Filter</span>
+					<a class="filter-reset" href="" {{action "resetAll"}}>reset</a>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<label>Name</label>
+						<a class="filter-reset" href="" {{action 'clearTerm'}}>clear</a>
+						{{input type="search" classNames="form-control" value=searchTerm placeholder="Search..."}}
+					</div>
+					<hr>
+					<div class="form-group">
+						<label>Country</label>
+						{{view Ember.Select content=countries classNames="form-control" value=selectedCountry}}
+					</div>
+					<div class="form-group">
+						<label>State</label>
+						{{view Ember.Select content=states classNames="form-control" value=selectedState}}
+					</div>
+					<div class="form-group">
+						<label>Neighborhood</label>
+						{{view Ember.Select content=neighborhoods classNames="form-control" value=neighborhood}}
+					</div>
+					<hr>
+					<div class="form-group">
+						<label>Category</label>
+						<a class="filter-reset" href="" {{action 'clearCategory'}}>clear</a>
+						{{radio-group content=categories value=selectedCategory}}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-10">
+			<h1>Advanced Search</h1>
+			{{#if filtered}}
+				{{results-view model=filtered offset=offset}}
+			{{else}}
+				Sorry, but there are no Mikomos available within your search parameters. Please try again...
+			{{/if}}
+		</div>
+	</div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="search/query">
+	<h1>Search Results</h1>
+	<p>Search Term: {{query}}</p>
+	{{results-view model=model}}
+</script>
+<script type="text/x-handlebars" data-template-name="components/results-view">
+	<div class="row">
+		<div class="col-xs-12">
+			Record {{offset}} to {{maxRecord}} of {{modelLength}}
+			<ul class="pager">
+				{{!#unless noPreviousPage}}
+				<li {{bind-attr class=":previous noPreviousPage:disabled"}}>
+					<a class="pointer" {{action "prevPage"}}>&larr; Previous</a>
+				</li>
+				{{!/unless}}
+				{{!#unless noNextPage}}
+				<li {{bind-attr class=":next noNextPage:disabled"}}>
+					<a class="pointer" {{action "nextPage"}} {{bind-attr disabled=noNextPage}}>Next &rarr;</a>
+				</li>
+				{{!/unless}}
+			</ul>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+		{{mikomos-table model=arrangedContent}}
+		</div>
+	</div>
+</script>
+<script type="text/x-handlebars" data-template-name="makom">
+	<div class="container">
+	<div class="row">
+		<div class="col-xs-8">
+			<h1>{{title}} {{#each categories}}<span class="flaticon flaticon-{{this}} flaticon-1x"></span> {{/each}}</h1>
+		</div>
+		<div class="col-xs-4">
+			<div class="addthis_sharing_toolbox"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-6">
+			<h3>{{address}}<br>{{city}}, {{state}} {{zip}}</h3>
+			<h4>{{phone}}</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<p><a {{bind-attr href=web_page}} target="_blank">{{web_page}}</a></p>
+			<p>{{basic_description}}</p>
+			<hr>
+			{{#if tips}}
+				<h4>Things to know:</h4>
+					<ul>
+					{{#each tips}}
+						<li>{{this}}</li>
+					{{/each}}
+					</ul>
+			{{/if}}
+		</div>
+	</div>
+	</div>
+</script>
+<script type="text/x-handlebars" data-template-name="near-me">
+{{position}}
+</script>
+<script type="text/x-handlebars" data-template-name="components/back-button">
+<span class="glyphicon glyphicon-chevron-left"></span>
+</script>
+<script type="text/x-handlebars" data-template-name="components/mikomos-table">
+	<table class="table table-hover">
+		<tbody>
+		{{#each model}}
+			{{#link-to 'makom' id tagName="tr" classNames="pointer"}}
+				<td>{{#each categories}}<span class="flaticon flaticon-{{this}} flaticon-2x"></span>{{/each}}</td>
+				<td>{{title}}</td>
+				<td>{{address}}</td>
+				<td>{{city}}</td>
+				<td>{{state}}</td>
+				<td>{{zip}}</td>
+				<td>{{phone}}</td>
+			{{/link-to}}
+		{{/each}}
+		</tbody>
+	</table>
+</script>
+<script type="text/x-handlebars" data-template-name="components/auto-complete">
+	<div class="row">
+		<div class="col-xs-12">
+			<form id="autocomplete" role="search" {{action 'search' on='submit'}}>
+				<div class="input-group">
+					{{input id="searchBox" classNames="form-control input-lg" value=searchText placeholder="Search mikomos..."}}
+					<span class="input-group-btn">
+						<submit class="btn btn-primary btn-lg" {{action 'search'}}>
+								<span class="glyphicon glyphicon-search"></span>
+						</submit>
+					</span>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="list-group dropdown">
+					{{#each searchResults}}
+						{{#link-to 'makom' this.id classNames="list-group-item"}}{{this.title}}{{/link-to}}
+					{{/each}}
+			</div>
+		</div>
+	</div>
+</script>
+
+<script type="text/x-handlebars" data-template-name='components/radio-group'>  
+	{{#each category in content}}
+	<div class="row">
+		<div class="col-xs-12">
+			<label>
+				{{radio-button value=category selection=view.value}}
+				<i class="flaticon flaticon-{{category}} flaticon-2x"></i>
+			</label>
+			{{category}}
+		</div>
+	</div>
+    {{/each}}
+</script>
+<script type="text/x-handlebars" data-template-name="components/add-this">
+</script>
+<style> 
+	.pointer { cursor:pointer; }
+	a.thumbnail { text-decoration:none; }
+	div.dropdown {position:absolute;z-index:1200;border-color: #66afe9;box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);}
+	a.filter-reset { display:inline-block; font-weight:normal; font-size:12px; margin-left:5px; }
+	.wide { width:100%; }
+	.custom-brand {vertical-align: middle !important;display: inline-block !important;float: none !important;}
+</style>
+<script src="res/js/libs/jquery-2.0.3.js"></script>
+<script src="res/js/libs/handlebars-1.3.0.min.js"></script>
+<script src="res/js/libs/underscore-1.6.0.js"></script>
+<script src="res/js/libs/ember-1.8.0-beta.1+canary.20c03508.js"></script>
+<script src="res/js/libs/bootstrap-3.1.1.js"></script>
+<script src="res/js/libs/moment.js"></script>
+<script src="res/js/libs/typeahead.bundle-0.10.2.js"></script>
+<script src="app.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-53bc5c1879c208ea"></script>
+	</body>
+</html>
